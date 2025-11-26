@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘旺给我一万</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            text-align: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: #2575fc;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .description {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+            border: 2px dashed #e0e0e0;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            max-width: 180px;
+        }
+        
+        #yes-btn {
+            background: linear-gradient(to right, #0cbc87, #4cd964);
+            color: white;
+        }
+        
+        #no-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e7f7ef;
+            border-radius: 12px;
+            color: #0cbc87;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .description {
+                font-size: 1.2rem;
+            }
+            
+            button {
+                padding: 12px 25px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>刘旺给我一万</h1>
+        <div class="description" id="description">
+            请点击下方按钮选择
+        </div>
+        
+        <div class="buttons">
+            <button id="yes-btn">同意</button>
+            <button id="no-btn">不同意</button>
+        </div>
+        
+        <div class="result" id="result">
+            您做出了正确的选择！
+        </div>
+        
+        <div class="footer">
+            趣味互动页面 - 长按可分享给朋友
+        </div>
+    </div>
+
+    <script>
+        // 定义描述数组
+        const descriptions = [
+            "给我一万",
+        ];
+        
+        const descriptionElement = document.getElementById('description');
+        const yesButton = document.getElementById('yes-btn');
+        const noButton = document.getElementById('no-btn');
+        const resultElement = document.getElementById('result');
+        
+        let currentIndex = 0;
+        
+        // 初始化描述
+        descriptionElement.textContent = descriptions[currentIndex];
+        descriptionElement.classList.add('fade-in');
+        
+        // "不是"按钮点击事件
+        noButton.addEventListener('click', function() {
+            // 循环到下一个描述
+            currentIndex = (currentIndex + 1) % descriptions.length;
+            
+            // 更新描述文本
+            descriptionElement.textContent = descriptions[currentIndex];
+            
+            // 添加动画效果
+            descriptionElement.classList.remove('fade-in');
+            void descriptionElement.offsetWidth; // 触发重绘
+            descriptionElement.classList.add('fade-in');
+            
+            // 添加脉冲动画到按钮
+            this.classList.add('pulse');
+            setTimeout(() => {
+                this.classList.remove('pulse');
+            }, 1500);
+        });
+        
+        // "是"按钮点击事件
+        yesButton.addEventListener('click', function() {
+            // 显示结果
+            resultElement.style.display = 'block';
+            resultElement.classList.add('fade-in');
+            
+            // 禁用按钮
+            yesButton.disabled = true;
+            noButton.disabled = true;
+            
+            // 更改按钮样式
+            yesButton.style.opacity = '0.7';
+            noButton.style.opacity = '0.7';
+            
+            // 添加庆祝效果
+            descriptionElement.style.background = 'linear-gradient(to right, #0cbc87, #4cd964)';
+            descriptionElement.style.color = 'white';
+            descriptionElement.textContent = '恭喜您找到了正确答案！';
+        });
+        
+        // 添加一些初始动画
+        setTimeout(() => {
+            descriptionElement.style.border = '2px dashed #2575fc';
+        }, 1000);
+    </script>
+</body>
+</html>
