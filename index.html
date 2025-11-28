@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刘旺给我一万</title>
+    <title>课堂提醒</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
             color: #333;
             min-height: 100vh;
             display: flex;
@@ -27,39 +27,27 @@
             width: 100%;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
             padding: 40px 30px;
-            position: relative;
         }
         
-        h1 {
-            color: #2575fc;
-            margin-bottom: 30px;
-            font-size: 2.2rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .description {
-            font-size: 1.4rem;
-            margin-bottom: 40px;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            background: #f8f9fa;
+        .message {
+            font-size: 1.8rem;
+            margin: 30px 0;
+            padding: 20px;
+            background: #fff9e6;
             border-radius: 12px;
-            transition: all 0.5s ease;
-            border: 2px dashed #e0e0e0;
+            border: 2px dashed #ffcc00;
+            font-weight: bold;
+            color: #e67e22;
         }
         
         .buttons {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         
         button {
@@ -68,30 +56,20 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             flex: 1;
             max-width: 180px;
         }
         
-        #yes-btn {
-            background: linear-gradient(to right, #0cbc87, #4cd964);
+        #confirm-btn {
+            background: #4CAF50;
             color: white;
         }
         
-        #no-btn {
-            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+        #reject-btn {
+            background: #ff6b6b;
             color: white;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        button:active {
-            transform: translateY(1px);
         }
         
         .result {
@@ -102,137 +80,74 @@
             color: #0cbc87;
             font-size: 1.3rem;
             font-weight: bold;
-            display: none;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .description {
-                font-size: 1.2rem;
-            }
-            
-            button {
-                padding: 12px 25px;
-                font-size: 1.1rem;
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>刘旺给我一万</h1>
-        <div class="description" id="description">
-            请点击下方按钮选择
+        <div class="message" id="message">
+            刘心宇上课不要玩手机
         </div>
         
         <div class="buttons">
-            <button id="yes-btn">同意</button>
-            <button id="no-btn">不同意</button>
+            <button id="confirm-btn" onclick="handleConfirm()">收到</button>
+            <button id="reject-btn" onclick="handleReject()">不可能</button>
         </div>
         
-        <div class="result" id="result">
-            您做出了正确的选择！
-        </div>
-        
-        <div class="footer">
-            趣味互动页面 - 长按可分享给朋友
+        <div class="result" id="result" style="display: none;">
+            很好！请专心听课 📚
         </div>
     </div>
 
     <script>
-        // 定义描述数组
-        const descriptions = [
-            "给我一万",
+        // 禁用浏览器返回键
+        history.pushState(null, null, document.title);
+        window.addEventListener('popstate', function() {
+            history.pushState(null, null, document.title);
+        });
+
+        let rejectCount = 0;
+        const messages = [
+            "刘心宇上课不要玩手机",
+            "请放下手机专心听课",
+            "课堂时间很宝贵",
+            "尊重老师，尊重课堂",
+            "手机可以下课再玩",
+            "专注学习很重要",
+            "请认真听讲",
+            "不要分心玩手机"
         ];
-        
-        const descriptionElement = document.getElementById('description');
-        const yesButton = document.getElementById('yes-btn');
-        const noButton = document.getElementById('no-btn');
-        const resultElement = document.getElementById('result');
-        
-        let currentIndex = 0;
-        
-        // 初始化描述
-        descriptionElement.textContent = descriptions[currentIndex];
-        descriptionElement.classList.add('fade-in');
-        
-        // "不是"按钮点击事件
-        noButton.addEventListener('click', function() {
-            // 循环到下一个描述
-            currentIndex = (currentIndex + 1) % descriptions.length;
+
+        function handleConfirm() {
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('confirm-btn').disabled = true;
+            document.getElementById('reject-btn').disabled = true;
+            document.getElementById('message').textContent = '已确认！请专心听课';
+            document.getElementById('message').style.background = '#4CAF50';
+            document.getElementById('message').style.color = 'white';
             
-            // 更新描述文本
-            descriptionElement.textContent = descriptions[currentIndex];
-            
-            // 添加动画效果
-            descriptionElement.classList.remove('fade-in');
-            void descriptionElement.offsetWidth; // 触发重绘
-            descriptionElement.classList.add('fade-in');
-            
-            // 添加脉冲动画到按钮
-            this.classList.add('pulse');
             setTimeout(() => {
-                this.classList.remove('pulse');
-            }, 1500);
+                document.body.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#4CAF50; color:white; font-size:2rem;">页面可以关闭了</div>';
+            }, 2000);
+        }
+
+        function handleReject() {
+            rejectCount++;
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            document.getElementById('message').textContent = messages[randomIndex];
+            
+            // 添加简单的动画效果
+            const messageElement = document.getElementById('message');
+            messageElement.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                messageElement.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // 防止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
         });
-        
-        // "是"按钮点击事件
-        yesButton.addEventListener('click', function() {
-            // 显示结果
-            resultElement.style.display = 'block';
-            resultElement.classList.add('fade-in');
-            
-            // 禁用按钮
-            yesButton.disabled = true;
-            noButton.disabled = true;
-            
-            // 更改按钮样式
-            yesButton.style.opacity = '0.7';
-            noButton.style.opacity = '0.7';
-            
-            // 添加庆祝效果
-            descriptionElement.style.background = 'linear-gradient(to right, #0cbc87, #4cd964)';
-            descriptionElement.style.color = 'white';
-            descriptionElement.textContent = '恭喜您找到了正确答案！';
-        });
-        
-        // 添加一些初始动画
-        setTimeout(() => {
-            descriptionElement.style.border = '2px dashed #2575fc';
-        }, 1000);
     </script>
 </body>
 </html>
